@@ -41,11 +41,39 @@ pub struct InstitutionalInvestorsBuySell {
     pub stock_id: String,
 }
 
+#[derive(Default, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub struct Shareholding {
+    pub date: String,
+    pub stock_id: String,
+    pub stock_name: String,
+    #[serde(alias = "InternationalCode")]
+    pub international_code: String,
+    #[serde(alias = "ForeignInvestmentRemainingShares")]
+    pub foreign_investment_remaining_shares: u64,
+    #[serde(alias = "ForeignInvestmentShares")]
+    pub foreign_investment_shares: u64,
+    #[serde(alias = "ForeignInvestmentRemainRatio")]
+    pub foreign_investment_remain_ratio: f64,
+    #[serde(alias = "ForeignInvestmentSharesRatio")]
+    pub foreign_investment_shares_ratio: f64,
+    #[serde(alias = "ForeignInvestmentUpperLimitRatio")]
+    pub foreign_investment_upper_limit_ratio: f64,
+    #[serde(alias = "ChineseInvestmentUpperLimitRatio")]
+    pub chinese_investment_upper_limit_ratio: f64,
+    #[serde(alias = "NumberOfSharesIssued")]
+    pub number_of_shares_issued: u64,
+    #[serde(alias = "RecentlyDeclareDate")]
+    pub recently_declare_date: String,
+    pub note: String,
+}
+
 #[derive(Deserialize, Debug, Serialize)]
 #[serde(rename_all = "snake_case", untagged)]
 pub enum Data {
     TaiwanStockPrice(TaiwanStockPrice),
     InstitutionalInvestorsBuySell(InstitutionalInvestorsBuySell),
+    Shareholding(Shareholding),
 }
 
 #[derive(Default, Debug, Deserialize, Serialize)]
@@ -60,6 +88,7 @@ pub enum Dataset {
     Unknown,
     TaiwanStockPrice,
     InstitutionalInvestorsBuySell,
+    Shareholding,
 }
 
 impl std::fmt::Display for Dataset {
@@ -68,6 +97,7 @@ impl std::fmt::Display for Dataset {
             Dataset::Unknown => write!(f, "Unknown"),
             Dataset::TaiwanStockPrice => write!(f, "TaiwanStockPrice"),
             Dataset::InstitutionalInvestorsBuySell => write!(f, "InstitutionalInvestorsBuySell"),
+            Dataset::Shareholding => write!(f, "Shareholding"),
         }
     }
 }
