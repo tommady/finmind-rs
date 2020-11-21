@@ -1,18 +1,18 @@
-use crate::schema::{Result, TaiwanStockPriceArgs, TaiwanStockPriceResponse};
+use crate::schema::{Args, Response, Result};
 
 const V3_DEFAULT_URL: &str = "https://api.finmindtrade.com/api/v3/data";
 const DEFAULT_DATE_FORMAT: &str = "%Y-%m-%d";
 
-pub fn taiwan_stock_price_blocking<A>(args: A) -> Result<TaiwanStockPriceResponse>
+pub fn request_blocking<A>(args: A) -> Result<Response>
 where
-    A: Into<TaiwanStockPriceArgs>,
+    A: Into<Args>,
 {
     let args = args.into();
     let url = reqwest::Url::parse_with_params(
         V3_DEFAULT_URL,
         &[
             ("stock_id", args.stock_id),
-            ("dataset", "TaiwanStockPrice"),
+            ("dataset", &args.dataset.to_string()),
             (
                 "date",
                 &args.start_date.format(DEFAULT_DATE_FORMAT).to_string(),
@@ -34,16 +34,16 @@ where
     }
 }
 
-pub async fn taiwan_stock_price_async<A>(args: A) -> Result<TaiwanStockPriceResponse>
+pub async fn request_async<A>(args: A) -> Result<Response>
 where
-    A: Into<TaiwanStockPriceArgs>,
+    A: Into<Args>,
 {
     let args = args.into();
     let url = reqwest::Url::parse_with_params(
         V3_DEFAULT_URL,
         &[
             ("stock_id", args.stock_id),
-            ("dataset", "TaiwanStockPrice"),
+            ("dataset", &args.dataset.to_string()),
             (
                 "date",
                 &args.start_date.format(DEFAULT_DATE_FORMAT).to_string(),
