@@ -65,7 +65,43 @@ pub struct Shareholding {
     pub number_of_shares_issued: u64,
     #[serde(alias = "RecentlyDeclareDate")]
     pub recently_declare_date: NaiveDate,
+    #[serde(skip_deserializing)]
     pub note: String,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct TaiwanStockMarginPurchaseShortSale {
+    pub date: NaiveDate,
+    pub stock_id: String,
+    #[serde(alias = "MarginPurchaseBuy")]
+    pub margin_purchase_buy: u64,
+    #[serde(alias = "MarginPurchaseCashRepayment")]
+    pub margin_purchase_cash_repayment: u64,
+    #[serde(alias = "MarginPurchaseLimit")]
+    pub margin_purchase_limit: u64,
+    #[serde(alias = "MarginPurchaseSell")]
+    pub margin_purchase_sell: u64,
+    #[serde(alias = "MarginPurchaseTodayBalance")]
+    pub margin_purchase_today_balance: u64,
+    #[serde(alias = "MarginPurchaseYesterdayBalance")]
+    pub margin_purchase_yesterday_balance: u64,
+    #[serde(skip_deserializing, alias = "Note")]
+    pub note: String,
+    #[serde(alias = "OffsetLoanAndShort")]
+    pub offset_loan_and_short: u64,
+    #[serde(alias = "ShortSaleBuy")]
+    pub short_sale_buy: u64,
+    #[serde(alias = "ShortSaleCashRepayment")]
+    pub short_sale_cash_repayment: u64,
+    #[serde(alias = "ShortSaleLimit")]
+    pub short_sale_limit: u64,
+    #[serde(alias = "ShortSaleSell")]
+    pub short_sale_sell: u64,
+    #[serde(alias = "ShortSaleTodayBalance")]
+    pub short_sale_today_balance: u64,
+    #[serde(alias = "ShortSaleYesterdayBalance")]
+    pub short_sale_yesterday_balance: u64,
 }
 
 #[derive(Deserialize, Debug)]
@@ -74,6 +110,7 @@ pub enum Data {
     TaiwanStockPrice(TaiwanStockPrice),
     InstitutionalInvestorsBuySell(InstitutionalInvestorsBuySell),
     Shareholding(Shareholding),
+    TaiwanStockMarginPurchaseShortSale(TaiwanStockMarginPurchaseShortSale),
 }
 
 #[derive(Debug, Deserialize)]
@@ -89,6 +126,7 @@ pub enum Dataset {
     TaiwanStockPrice,
     InstitutionalInvestorsBuySell,
     Shareholding,
+    TaiwanStockMarginPurchaseShortSale,
 }
 
 impl std::fmt::Display for Dataset {
@@ -98,6 +136,9 @@ impl std::fmt::Display for Dataset {
             Dataset::TaiwanStockPrice => write!(f, "TaiwanStockPrice"),
             Dataset::InstitutionalInvestorsBuySell => write!(f, "InstitutionalInvestorsBuySell"),
             Dataset::Shareholding => write!(f, "Shareholding"),
+            Dataset::TaiwanStockMarginPurchaseShortSale => {
+                write!(f, "TaiwanStockMarginPurchaseShortSale")
+            }
         }
     }
 }
