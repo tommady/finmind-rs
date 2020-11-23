@@ -1,7 +1,7 @@
 use chrono::{Date, NaiveDate, Utc};
 use serde::Deserialize;
 
-pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+pub type Result<T> = std::result::Result<T, FinmindError>;
 
 // Trading_Volume(成交量)
 // Trading_money(成交金額)
@@ -256,6 +256,104 @@ impl
             end_date: end_date,
             user_id: user_id,
             password: password,
+        }
+    }
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct ErrorResponse {
+    pub status: usize,
+    pub msg: String,
+}
+
+impl std::fmt::Display for ErrorResponse {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "FinmindAPI: {{ status:{}, msg:{} }}",
+            self.status, self.msg,
+        )
+    }
+}
+
+impl std::error::Error for ErrorResponse {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        None
+    }
+}
+
+#[derive(Debug)]
+pub enum FinmindError {
+    // error from serde_json lib
+    SerdeJson(serde_json::Error),
+    // error from reqwest lib
+    Reqwest(reqwest::Error),
+    // Url parsing error
+    Url(url::ParseError),
+    // errors from http response status
+    // 402 response status
+    RateLimitReached,
+    // unknown error
+    Unknown(ErrorResponse),
+}
+
+impl std::fmt::Display for FinmindError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match *self {
+            FinmindError::Url(ref e) => write!(f, "Url Parse error: {}", e),
+            FinmindError::SerdeJson(ref e) => write!(f, "Serde_json Lib error: {}", e),
+            FinmindError::Reqwest(ref e) => write!(f, "Reqwest Lib error: {}", e),
+            FinmindError::RateLimitReached => write!(f, "Rate limit reached"),
+            FinmindError::Unknown(ref e) => write!(f, "Unknown error: {}", e),
+        }
+    }
+}
+
+impl std::error::Error for FinmindError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match *self {
+            FinmindError::Url(ref e) => Some(e),
+            FinmindError::SerdeJson(ref e) => Some(e),
+            FinmindError::Reqwest(ref e) => Some(e),
+            FinmindError::RateLimitReached => None,
+            FinmindError::Unknown(ref _e) => None,
+        }
+    }
+}
+
+impl From<url::ParseError> for FinmindError {
+    fn from(err: url::ParseError) -> FinmindError {
+        FinmindError::Url(err)
+    }
+}
+
+impl From<serde_json::Error> for FinmindError {
+    fn from(err: serde_json::Error) -> FinmindError {
+        FinmindError::SerdeJson(err)
+    }
+}
+
+impl From<reqwest::Error> for FinmindError {
+    fn from(err: reqwest::Error) -> FinmindError {
+        FinmindError::Reqwest(err)
+    }
+}
+
+impl From<String> for FinmindError {
+    fn from(err: String) -> FinmindError {
+        FinmindError::Unknown(ErrorResponse {
+            status: 500,
+            msg: err,
+        })
+    }
+}
+
+impl From<ErrorResponse> for FinmindError {
+    fn from(err: ErrorResponse) -> FinmindError {
+        match err.status {
+            402 => FinmindError::RateLimitReached,
+            _ => FinmindError::Unknown(err),
         }
     }
 }

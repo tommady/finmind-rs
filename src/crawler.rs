@@ -1,4 +1,4 @@
-use crate::schema::{Args, Response, Result};
+use crate::schema::{Args, ErrorResponse, Response, Result};
 
 const V3_DEFAULT_URL: &str = "https://api.finmindtrade.com/api/v3/data";
 const DEFAULT_DATE_FORMAT: &str = "%Y-%m-%d";
@@ -28,7 +28,15 @@ where
 
     let resp = reqwest::blocking::get(url)?;
     if resp.status().is_success() {
-        Ok(resp.json()?)
+        let res: Response = resp.json()?;
+        if res.status != 200 {
+            return Err(ErrorResponse {
+                status: res.status,
+                msg: res.msg,
+            }
+            .into());
+        }
+        Ok(res)
     } else {
         Err(resp.text()?.into())
     }
@@ -59,7 +67,15 @@ where
 
     let resp = reqwest::get(url).await?;
     if resp.status().is_success() {
-        Ok(resp.json().await?)
+        let res: Response = resp.json().await?;
+        if res.status != 200 {
+            return Err(ErrorResponse {
+                status: res.status,
+                msg: res.msg,
+            }
+            .into());
+        }
+        Ok(res)
     } else {
         Err(resp.text().await?.into())
     }
