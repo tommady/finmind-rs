@@ -1,5 +1,5 @@
-use chrono::{Date, Utc};
-use serde::{Deserialize, Serialize};
+use chrono::{Date, NaiveDate, Utc};
+use serde::Deserialize;
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -13,7 +13,7 @@ pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 // open(開盤價)
 // spread(震幅)
 // stock_id(股票代碼)
-#[derive(Default, Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct TaiwanStockPrice {
     #[serde(alias = "Trading_Volume")]
@@ -27,24 +27,24 @@ pub struct TaiwanStockPrice {
     pub spread: f64,
     #[serde(alias = "Trading_turnover")]
     pub trading_turnover: f64,
-    pub date: String,
+    pub date: NaiveDate,
     pub stock_id: String,
 }
 
-#[derive(Default, Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct InstitutionalInvestorsBuySell {
     pub buy: u64,
     pub name: String,
     pub sell: u64,
-    pub date: String,
+    pub date: NaiveDate,
     pub stock_id: String,
 }
 
-#[derive(Default, Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct Shareholding {
-    pub date: String,
+    pub date: NaiveDate,
     pub stock_id: String,
     pub stock_name: String,
     #[serde(alias = "InternationalCode")]
@@ -64,11 +64,11 @@ pub struct Shareholding {
     #[serde(alias = "NumberOfSharesIssued")]
     pub number_of_shares_issued: u64,
     #[serde(alias = "RecentlyDeclareDate")]
-    pub recently_declare_date: String,
+    pub recently_declare_date: NaiveDate,
     pub note: String,
 }
 
-#[derive(Deserialize, Debug, Serialize)]
+#[derive(Deserialize, Debug)]
 #[serde(rename_all = "snake_case", untagged)]
 pub enum Data {
     TaiwanStockPrice(TaiwanStockPrice),
@@ -76,7 +76,7 @@ pub enum Data {
     Shareholding(Shareholding),
 }
 
-#[derive(Default, Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct Response {
     pub msg: String,

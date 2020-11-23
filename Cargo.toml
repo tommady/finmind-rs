@@ -1,6 +1,6 @@
 [package]
 name = "finmind"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["tommady <tommady@users.noreply.github.com>"]
 description = "a rust library of https://finmindtrade.com/analysis/#/data/document"
 license-file = "LICENSE"
@@ -17,7 +17,7 @@ edition = "2018"
 reqwest = { version = "0.10.8", features = ["blocking", "json", "rustls-tls"] }
 serde = { version = "1.0.117", features = ["derive"] }
 serde_json = "1.0.59"
-chrono = "0.4.19"
+chrono = { version = "0.4.19", features = ["serde"] }
 
 [dev-dependencies]
 tokio-test = "0.2.1"
