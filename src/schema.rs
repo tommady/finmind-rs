@@ -104,6 +104,17 @@ pub struct TaiwanStockMarginPurchaseShortSale {
     pub short_sale_yesterday_balance: u64,
 }
 
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub struct TaiwanStockMonthRevenue {
+    pub date: NaiveDate,
+    pub stock_id: String,
+    pub country: String,
+    pub revenue: u64,
+    pub revenue_month: u32,
+    pub revenue_year: u32,
+}
+
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "snake_case", untagged)]
 pub enum Data {
@@ -111,6 +122,7 @@ pub enum Data {
     InstitutionalInvestorsBuySell(InstitutionalInvestorsBuySell),
     Shareholding(Shareholding),
     TaiwanStockMarginPurchaseShortSale(TaiwanStockMarginPurchaseShortSale),
+    TaiwanStockMonthRevenue(TaiwanStockMonthRevenue),
 }
 
 #[derive(Debug, Deserialize)]
@@ -127,6 +139,7 @@ pub enum Dataset {
     InstitutionalInvestorsBuySell,
     Shareholding,
     TaiwanStockMarginPurchaseShortSale,
+    TaiwanStockMonthRevenue,
 }
 
 impl std::fmt::Display for Dataset {
@@ -139,6 +152,7 @@ impl std::fmt::Display for Dataset {
             Dataset::TaiwanStockMarginPurchaseShortSale => {
                 write!(f, "TaiwanStockMarginPurchaseShortSale")
             }
+            Dataset::TaiwanStockMonthRevenue => write!(f, "TaiwanStockMonthRevenue"),
         }
     }
 }

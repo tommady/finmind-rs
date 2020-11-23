@@ -197,7 +197,7 @@ fn test_taiwan_stock_margin_purchase_short_sale_blocking_pass() {
                 if let Data::TaiwanStockMarginPurchaseShortSale(data) = d {
                     assert_eq!(data.stock_id, "0050");
                 } else {
-                    assert!(false, "casting TaiwanStockMarginPurchaseShortSale  failed");
+                    assert!(false, "casting TaiwanStockMarginPurchaseShortSale failed");
                 }
             }
         }
@@ -227,7 +227,63 @@ fn test_taiwan_stock_margin_purchase_short_sale_async_pass() {
                 if let Data::TaiwanStockMarginPurchaseShortSale(data) = d {
                     assert_eq!(data.stock_id, "0050");
                 } else {
-                    assert!(false, "casting TaiwanStockMarginPurchaseShortSale  failed");
+                    assert!(false, "casting TaiwanStockMarginPurchaseShortSale failed");
+                }
+            }
+        }
+        Err(e) => assert!(false, e.to_string()),
+    }
+}
+
+#[test]
+fn test_taiwan_stock_month_revenue_blocking_pass() {
+    let res = crawler::request_blocking(Dataset::TaiwanStockMonthRevenue);
+    match res {
+        Ok(v) => assert_eq!(v.data.len(), 0),
+        Err(e) => assert!(false, e.to_string()),
+    }
+
+    let res = crawler::request_blocking((
+        Dataset::TaiwanStockMonthRevenue,
+        "2330",
+        Utc.ymd(2020, 10, 8),
+        Utc.ymd(2020, 10, 13),
+    ));
+    match res {
+        Ok(v) => {
+            for d in v.data {
+                if let Data::TaiwanStockMonthRevenue(data) = d {
+                    assert_eq!(data.stock_id, "2330");
+                } else {
+                    assert!(false, "casting TaiwanStockMonthRevenue failed");
+                }
+            }
+        }
+        Err(e) => assert!(false, e.to_string()),
+    }
+}
+
+#[test]
+fn test_taiwan_stock_month_revenue_async_pass() {
+    let res = block_on(crawler::request_async(Dataset::TaiwanStockMonthRevenue));
+    match res {
+        Ok(v) => assert_eq!(v.data.len(), 0),
+        Err(e) => assert!(false, e.to_string()),
+    }
+
+    let res = block_on(crawler::request_async((
+        Dataset::TaiwanStockMonthRevenue,
+        "2330",
+        Utc.ymd(2020, 10, 8),
+        Utc.ymd(2020, 10, 13),
+    )));
+    match res {
+        Ok(v) => {
+            for d in v.data {
+                if let Data::TaiwanStockMonthRevenue(data) = d {
+                    assert_eq!(data.stock_id, "2330");
+                } else {
+                    assert!(false, "casting TaiwanStockMonthRevenue failed");
                 }
             }
         }
