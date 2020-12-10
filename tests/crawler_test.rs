@@ -1,4 +1,4 @@
-use chrono::{TimeZone, Utc};
+use chrono::NaiveDate;
 use finmind::crawler;
 use finmind::schema::{Data, Dataset};
 
@@ -16,8 +16,8 @@ fn test_taiwan_stock_price_blocking_pass() {
     let res = crawler::request_blocking((
         Dataset::TaiwanStockPrice,
         "0050",
-        Utc.ymd(2020, 10, 8),
-        Utc.ymd(2020, 10, 13),
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
     ));
     match res {
         Ok(v) => {
@@ -45,8 +45,8 @@ fn test_taiwan_stock_price_async_pass() {
     let res = block_on(crawler::request_async((
         Dataset::TaiwanStockPrice,
         "0050",
-        Utc.ymd(2020, 10, 8),
-        Utc.ymd(2020, 10, 13),
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
     )));
     match res {
         Ok(v) => {
@@ -74,8 +74,8 @@ fn test_institutional_investors_buy_sell_blocking_pass() {
     let res = crawler::request_blocking((
         Dataset::InstitutionalInvestorsBuySell,
         "0050",
-        Utc.ymd(2020, 10, 8),
-        Utc.ymd(2020, 10, 13),
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
     ));
     match res {
         Ok(v) => {
@@ -104,8 +104,8 @@ fn test_institutional_investors_buy_sell_async_pass() {
     let res = block_on(crawler::request_async((
         Dataset::InstitutionalInvestorsBuySell,
         "0050",
-        Utc.ymd(2020, 10, 8),
-        Utc.ymd(2020, 10, 13),
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
     )));
     match res {
         Ok(v) => {
@@ -132,8 +132,8 @@ fn test_shareholding_blocking_pass() {
     let res = crawler::request_blocking((
         Dataset::Shareholding,
         "0050",
-        Utc.ymd(2020, 10, 8),
-        Utc.ymd(2020, 10, 13),
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
     ));
     match res {
         Ok(v) => {
@@ -160,8 +160,8 @@ fn test_shareholding_async_pass() {
     let res = block_on(crawler::request_async((
         Dataset::Shareholding,
         "0050",
-        Utc.ymd(2020, 10, 8),
-        Utc.ymd(2020, 10, 13),
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
     )));
     match res {
         Ok(v) => {
@@ -188,8 +188,8 @@ fn test_taiwan_stock_margin_purchase_short_sale_blocking_pass() {
     let res = crawler::request_blocking((
         Dataset::TaiwanStockMarginPurchaseShortSale,
         "0050",
-        Utc.ymd(2020, 10, 8),
-        Utc.ymd(2020, 10, 13),
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
     ));
     match res {
         Ok(v) => {
@@ -218,8 +218,8 @@ fn test_taiwan_stock_margin_purchase_short_sale_async_pass() {
     let res = block_on(crawler::request_async((
         Dataset::TaiwanStockMarginPurchaseShortSale,
         "0050",
-        Utc.ymd(2020, 10, 8),
-        Utc.ymd(2020, 10, 13),
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
     )));
     match res {
         Ok(v) => {
@@ -246,8 +246,8 @@ fn test_taiwan_stock_month_revenue_blocking_pass() {
     let res = crawler::request_blocking((
         Dataset::TaiwanStockMonthRevenue,
         "2330",
-        Utc.ymd(2020, 10, 8),
-        Utc.ymd(2020, 10, 13),
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
     ));
     match res {
         Ok(v) => {
@@ -274,8 +274,8 @@ fn test_taiwan_stock_month_revenue_async_pass() {
     let res = block_on(crawler::request_async((
         Dataset::TaiwanStockMonthRevenue,
         "2330",
-        Utc.ymd(2020, 10, 8),
-        Utc.ymd(2020, 10, 13),
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
     )));
     match res {
         Ok(v) => {

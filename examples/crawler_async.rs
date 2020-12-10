@@ -1,4 +1,4 @@
-use chrono::{TimeZone, Utc};
+use chrono::NaiveDate;
 use finmind::crawler;
 use finmind::schema::Dataset;
 
@@ -7,8 +7,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     match crawler::request_async((
         Dataset::TaiwanStockPrice,
         "0050",
-        Utc.ymd(2020, 10, 8),
-        Utc.ymd(2020, 10, 13),
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
     ))
     .await
     {

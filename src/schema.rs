@@ -1,4 +1,4 @@
-use chrono::{Date, NaiveDate, Utc};
+use chrono::NaiveDate;
 use serde::Deserialize;
 
 pub type Result<T> = std::result::Result<T, FinmindError>;
@@ -160,8 +160,8 @@ impl std::fmt::Display for Dataset {
 pub struct Args {
     pub dataset: Dataset,
     pub stock_id: &'static str,
-    pub start_date: Date<Utc>,
-    pub end_date: Date<Utc>,
+    pub start_date: NaiveDate,
+    pub end_date: NaiveDate,
     pub user_id: &'static str,
     pub password: &'static str,
 }
@@ -171,8 +171,8 @@ impl Default for Args {
         Args {
             dataset: Dataset::Unknown,
             stock_id: "",
-            start_date: chrono::offset::Utc::today(),
-            end_date: chrono::offset::Utc::today(),
+            start_date: chrono::offset::Utc::today().naive_utc(),
+            end_date: chrono::offset::Utc::today().naive_utc(),
             user_id: "",
             password: "",
         }
@@ -204,8 +204,8 @@ impl From<(Dataset, &'static str)> for Args {
     }
 }
 
-impl From<(Dataset, &'static str, Date<Utc>)> for Args {
-    fn from((dataset, stock_id, start_date): (Dataset, &'static str, Date<Utc>)) -> Self {
+impl From<(Dataset, &'static str, NaiveDate)> for Args {
+    fn from((dataset, stock_id, start_date): (Dataset, &'static str, NaiveDate)) -> Self {
         Self {
             dataset: dataset,
             stock_id: stock_id,
@@ -215,9 +215,9 @@ impl From<(Dataset, &'static str, Date<Utc>)> for Args {
     }
 }
 
-impl From<(Dataset, &'static str, Date<Utc>, Date<Utc>)> for Args {
+impl From<(Dataset, &'static str, NaiveDate, NaiveDate)> for Args {
     fn from(
-        (dataset, stock_id, start_date, end_date): (Dataset, &'static str, Date<Utc>, Date<Utc>),
+        (dataset, stock_id, start_date, end_date): (Dataset, &'static str, NaiveDate, NaiveDate),
     ) -> Self {
         Self {
             dataset: dataset,
@@ -233,8 +233,8 @@ impl
     From<(
         Dataset,
         &'static str,
-        Date<Utc>,
-        Date<Utc>,
+        NaiveDate,
+        NaiveDate,
         &'static str,
         &'static str,
     )> for Args
@@ -243,8 +243,8 @@ impl
         (dataset, stock_id, start_date, end_date, user_id, password): (
             Dataset,
             &'static str,
-            Date<Utc>,
-            Date<Utc>,
+            NaiveDate,
+            NaiveDate,
             &'static str,
             &'static str,
         ),
