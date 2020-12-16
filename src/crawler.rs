@@ -12,14 +12,14 @@ where
         V3_DEFAULT_URL,
         &[
             ("stock_id", args.stock_id),
-            ("dataset", &args.dataset.to_string()),
+            ("dataset", args.dataset.to_string()),
             (
                 "date",
-                &args.start_date.format(DEFAULT_DATE_FORMAT).to_string(),
+                args.start_date.format(DEFAULT_DATE_FORMAT).to_string(),
             ),
             (
                 "end_date",
-                &args.end_date.format(DEFAULT_DATE_FORMAT).to_string(),
+                args.end_date.format(DEFAULT_DATE_FORMAT).to_string(),
             ),
             ("user_id", args.user_id),
             ("password", args.password),
@@ -51,14 +51,14 @@ where
         V3_DEFAULT_URL,
         &[
             ("stock_id", args.stock_id),
-            ("dataset", &args.dataset.to_string()),
+            ("dataset", args.dataset.to_string()),
             (
                 "date",
-                &args.start_date.format(DEFAULT_DATE_FORMAT).to_string(),
+                args.start_date.format(DEFAULT_DATE_FORMAT).to_string(),
             ),
             (
                 "end_date",
-                &args.end_date.format(DEFAULT_DATE_FORMAT).to_string(),
+                args.end_date.format(DEFAULT_DATE_FORMAT).to_string(),
             ),
             ("user_id", args.user_id),
             ("password", args.password),

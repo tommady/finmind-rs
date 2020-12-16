@@ -159,22 +159,22 @@ impl std::fmt::Display for Dataset {
 
 pub struct Args {
     pub dataset: Dataset,
-    pub stock_id: &'static str,
+    pub stock_id: String,
     pub start_date: NaiveDate,
     pub end_date: NaiveDate,
-    pub user_id: &'static str,
-    pub password: &'static str,
+    pub user_id: String,
+    pub password: String,
 }
 
 impl Default for Args {
     fn default() -> Self {
         Args {
             dataset: Dataset::Unknown,
-            stock_id: "",
+            stock_id: "".to_owned(),
             start_date: chrono::offset::Utc::today().naive_utc(),
             end_date: chrono::offset::Utc::today().naive_utc(),
-            user_id: "",
-            password: "",
+            user_id: "".to_owned(),
+            password: "".to_owned(),
         }
     }
 }
@@ -194,8 +194,8 @@ impl From<Dataset> for Args {
     }
 }
 
-impl From<(Dataset, &'static str)> for Args {
-    fn from((dataset, stock_id): (Dataset, &'static str)) -> Self {
+impl From<(Dataset, String)> for Args {
+    fn from((dataset, stock_id): (Dataset, String)) -> Self {
         Self {
             dataset: dataset,
             stock_id: stock_id,
@@ -204,8 +204,8 @@ impl From<(Dataset, &'static str)> for Args {
     }
 }
 
-impl From<(Dataset, &'static str, NaiveDate)> for Args {
-    fn from((dataset, stock_id, start_date): (Dataset, &'static str, NaiveDate)) -> Self {
+impl From<(Dataset, String, NaiveDate)> for Args {
+    fn from((dataset, stock_id, start_date): (Dataset, String, NaiveDate)) -> Self {
         Self {
             dataset: dataset,
             stock_id: stock_id,
@@ -215,9 +215,9 @@ impl From<(Dataset, &'static str, NaiveDate)> for Args {
     }
 }
 
-impl From<(Dataset, &'static str, NaiveDate, NaiveDate)> for Args {
+impl From<(Dataset, String, NaiveDate, NaiveDate)> for Args {
     fn from(
-        (dataset, stock_id, start_date, end_date): (Dataset, &'static str, NaiveDate, NaiveDate),
+        (dataset, stock_id, start_date, end_date): (Dataset, String, NaiveDate, NaiveDate),
     ) -> Self {
         Self {
             dataset: dataset,
@@ -229,24 +229,15 @@ impl From<(Dataset, &'static str, NaiveDate, NaiveDate)> for Args {
     }
 }
 
-impl
-    From<(
-        Dataset,
-        &'static str,
-        NaiveDate,
-        NaiveDate,
-        &'static str,
-        &'static str,
-    )> for Args
-{
+impl From<(Dataset, String, NaiveDate, NaiveDate, String, String)> for Args {
     fn from(
         (dataset, stock_id, start_date, end_date, user_id, password): (
             Dataset,
-            &'static str,
+            String,
             NaiveDate,
             NaiveDate,
-            &'static str,
-            &'static str,
+            String,
+            String,
         ),
     ) -> Self {
         Self {
