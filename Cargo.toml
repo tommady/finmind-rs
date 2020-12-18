@@ -1,6 +1,6 @@
 [package]
 name = "finmind"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["tommady <tommady@users.noreply.github.com>"]
 description = "a rust library of https://finmindtrade.com/analysis/#/data/document"
 license-file = "LICENSE"

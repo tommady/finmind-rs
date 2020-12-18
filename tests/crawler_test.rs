@@ -290,3 +290,57 @@ fn test_taiwan_stock_month_revenue_async_pass() {
         Err(e) => assert!(false, e.to_string()),
     }
 }
+
+#[test]
+fn test_institutional_investors_blocking_pass() {
+    let res = crawler::request_blocking(Dataset::InstitutionalInvestors);
+    match res {
+        Ok(v) => assert_eq!(v.data.len(), 0),
+        Err(e) => assert!(false, e.to_string()),
+    }
+
+    let res = crawler::request_blocking((
+        Dataset::InstitutionalInvestors,
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
+    ));
+    match res {
+        Ok(v) => {
+            for d in v.data {
+                if let Data::InstitutionalInvestors(data) = d {
+                    assert_ne!(data.name, "".to_owned());
+                } else {
+                    assert!(false, "casting InstitutionalInvestors failed");
+                }
+            }
+        }
+        Err(e) => assert!(false, e.to_string()),
+    }
+}
+
+#[test]
+fn test_institutional_investors_async_pass() {
+    let res = block_on(crawler::request_async(Dataset::InstitutionalInvestors));
+    match res {
+        Ok(v) => assert_eq!(v.data.len(), 0),
+        Err(e) => assert!(false, e.to_string()),
+    }
+
+    let res = block_on(crawler::request_async((
+        Dataset::InstitutionalInvestors,
+        NaiveDate::from_ymd(2020, 10, 8),
+        NaiveDate::from_ymd(2020, 10, 13),
+    )));
+    match res {
+        Ok(v) => {
+            for d in v.data {
+                if let Data::InstitutionalInvestors(data) = d {
+                    assert_ne!(data.name, "".to_owned());
+                } else {
+                    assert!(false, "casting InstitutionalInvestors failed");
+                }
+            }
+        }
+        Err(e) => assert!(false, e.to_string()),
+    }
+}

@@ -43,6 +43,15 @@ pub struct InstitutionalInvestorsBuySell {
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]
+pub struct InstitutionalInvestors {
+    pub buy: u64,
+    pub name: String,
+    pub sell: u64,
+    pub date: NaiveDate,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub struct Shareholding {
     pub date: NaiveDate,
     pub stock_id: String,
@@ -120,6 +129,7 @@ pub struct TaiwanStockMonthRevenue {
 pub enum Data {
     TaiwanStockPrice(TaiwanStockPrice),
     InstitutionalInvestorsBuySell(InstitutionalInvestorsBuySell),
+    InstitutionalInvestors(InstitutionalInvestors),
     Shareholding(Shareholding),
     TaiwanStockMarginPurchaseShortSale(TaiwanStockMarginPurchaseShortSale),
     TaiwanStockMonthRevenue(TaiwanStockMonthRevenue),
@@ -136,6 +146,7 @@ pub struct Response {
 pub enum Dataset {
     Unknown,
     TaiwanStockPrice,
+    InstitutionalInvestors,
     InstitutionalInvestorsBuySell,
     Shareholding,
     TaiwanStockMarginPurchaseShortSale,
@@ -147,6 +158,7 @@ impl std::fmt::Display for Dataset {
         match *self {
             Dataset::Unknown => write!(f, "Unknown"),
             Dataset::TaiwanStockPrice => write!(f, "TaiwanStockPrice"),
+            Dataset::InstitutionalInvestors => write!(f, "InstitutionalInvestors"),
             Dataset::InstitutionalInvestorsBuySell => write!(f, "InstitutionalInvestorsBuySell"),
             Dataset::Shareholding => write!(f, "Shareholding"),
             Dataset::TaiwanStockMarginPurchaseShortSale => {
@@ -210,6 +222,17 @@ impl From<(Dataset, String, NaiveDate)> for Args {
             dataset: dataset,
             stock_id: stock_id,
             start_date: start_date,
+            ..Self::default()
+        }
+    }
+}
+
+impl From<(Dataset, NaiveDate, NaiveDate)> for Args {
+    fn from((dataset, start_date, end_date): (Dataset, NaiveDate, NaiveDate)) -> Self {
+        Self {
+            dataset: dataset,
+            start_date: start_date,
+            end_date: end_date,
             ..Self::default()
         }
     }
