@@ -33,7 +33,7 @@ pub struct TaiwanStockPrice {
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub struct InstitutionalInvestorsBuySell {
+pub struct TaiwanStockInstitutionalInvestorsBuySell {
     pub buy: u64,
     pub name: String,
     pub sell: u64,
@@ -43,7 +43,7 @@ pub struct InstitutionalInvestorsBuySell {
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub struct InstitutionalInvestors {
+pub struct TaiwanStockTotalInstitutionalInvestors {
     pub buy: u64,
     pub name: String,
     pub sell: u64,
@@ -52,7 +52,7 @@ pub struct InstitutionalInvestors {
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub struct Shareholding {
+pub struct TaiwanStockShareholding {
     pub date: NaiveDate,
     pub stock_id: String,
     pub stock_name: String,
@@ -128,9 +128,9 @@ pub struct TaiwanStockMonthRevenue {
 #[serde(rename_all = "snake_case", untagged)]
 pub enum Data {
     TaiwanStockPrice(TaiwanStockPrice),
-    InstitutionalInvestorsBuySell(InstitutionalInvestorsBuySell),
-    InstitutionalInvestors(InstitutionalInvestors),
-    Shareholding(Shareholding),
+    TaiwanStockInstitutionalInvestorsBuySell(TaiwanStockInstitutionalInvestorsBuySell),
+    TaiwanStockTotalInstitutionalInvestors(TaiwanStockTotalInstitutionalInvestors),
+    TaiwanStockShareholding(TaiwanStockShareholding),
     TaiwanStockMarginPurchaseShortSale(TaiwanStockMarginPurchaseShortSale),
     TaiwanStockMonthRevenue(TaiwanStockMonthRevenue),
 }
@@ -146,9 +146,9 @@ pub struct Response {
 pub enum Dataset {
     Unknown,
     TaiwanStockPrice,
-    InstitutionalInvestors,
-    InstitutionalInvestorsBuySell,
-    Shareholding,
+    TaiwanStockTotalInstitutionalInvestors,
+    TaiwanStockInstitutionalInvestorsBuySell,
+    TaiwanStockShareholding,
     TaiwanStockMarginPurchaseShortSale,
     TaiwanStockMonthRevenue,
 }
@@ -158,9 +158,13 @@ impl std::fmt::Display for Dataset {
         match *self {
             Dataset::Unknown => write!(f, "Unknown"),
             Dataset::TaiwanStockPrice => write!(f, "TaiwanStockPrice"),
-            Dataset::InstitutionalInvestors => write!(f, "InstitutionalInvestors"),
-            Dataset::InstitutionalInvestorsBuySell => write!(f, "InstitutionalInvestorsBuySell"),
-            Dataset::Shareholding => write!(f, "Shareholding"),
+            Dataset::TaiwanStockTotalInstitutionalInvestors => {
+                write!(f, "TaiwanStockTotalInstitutionalInvestors")
+            }
+            Dataset::TaiwanStockInstitutionalInvestorsBuySell => {
+                write!(f, "TaiwanStockInstitutionalInvestorsBuySell")
+            }
+            Dataset::TaiwanStockShareholding => write!(f, "TaiwanStockShareholding"),
             Dataset::TaiwanStockMarginPurchaseShortSale => {
                 write!(f, "TaiwanStockMarginPurchaseShortSale")
             }
@@ -171,22 +175,20 @@ impl std::fmt::Display for Dataset {
 
 pub struct Args {
     pub dataset: Dataset,
-    pub stock_id: String,
+    pub data_id: String,
     pub start_date: NaiveDate,
     pub end_date: NaiveDate,
-    pub user_id: String,
-    pub password: String,
+    pub token: String,
 }
 
 impl Default for Args {
     fn default() -> Self {
         Args {
             dataset: Dataset::Unknown,
-            stock_id: "".to_owned(),
+            data_id: "".to_owned(),
             start_date: chrono::offset::Utc::today().naive_utc(),
             end_date: chrono::offset::Utc::today().naive_utc(),
-            user_id: "".to_owned(),
-            password: "".to_owned(),
+            token: "".to_owned(),
         }
     }
 }
@@ -206,27 +208,6 @@ impl From<Dataset> for Args {
     }
 }
 
-impl From<(Dataset, String)> for Args {
-    fn from((dataset, stock_id): (Dataset, String)) -> Self {
-        Self {
-            dataset: dataset,
-            stock_id: stock_id,
-            ..Self::default()
-        }
-    }
-}
-
-impl From<(Dataset, String, NaiveDate)> for Args {
-    fn from((dataset, stock_id, start_date): (Dataset, String, NaiveDate)) -> Self {
-        Self {
-            dataset: dataset,
-            stock_id: stock_id,
-            start_date: start_date,
-            ..Self::default()
-        }
-    }
-}
-
 impl From<(Dataset, NaiveDate, NaiveDate)> for Args {
     fn from((dataset, start_date, end_date): (Dataset, NaiveDate, NaiveDate)) -> Self {
         Self {
@@ -240,11 +221,11 @@ impl From<(Dataset, NaiveDate, NaiveDate)> for Args {
 
 impl From<(Dataset, String, NaiveDate, NaiveDate)> for Args {
     fn from(
-        (dataset, stock_id, start_date, end_date): (Dataset, String, NaiveDate, NaiveDate),
+        (dataset, data_id, start_date, end_date): (Dataset, String, NaiveDate, NaiveDate),
     ) -> Self {
         Self {
             dataset: dataset,
-            stock_id: stock_id,
+            data_id: data_id,
             start_date: start_date,
             end_date: end_date,
             ..Self::default()
@@ -252,24 +233,22 @@ impl From<(Dataset, String, NaiveDate, NaiveDate)> for Args {
     }
 }
 
-impl From<(Dataset, String, NaiveDate, NaiveDate, String, String)> for Args {
+impl From<(Dataset, String, NaiveDate, NaiveDate, String)> for Args {
     fn from(
-        (dataset, stock_id, start_date, end_date, user_id, password): (
+        (dataset, stock_id, start_date, end_date, token): (
             Dataset,
             String,
             NaiveDate,
             NaiveDate,
             String,
-            String,
         ),
     ) -> Self {
         Self {
             dataset: dataset,
-            stock_id: stock_id,
+            data_id: stock_id,
             start_date: start_date,
             end_date: end_date,
-            user_id: user_id,
-            password: password,
+            token: token,
         }
     }
 }
@@ -308,6 +287,8 @@ pub enum FinmindError {
     // errors from http response status
     // 402 response status
     RateLimitReached,
+    // 400 response status
+    BadRequest,
     // unknown error
     Unknown(ErrorResponse),
 }
@@ -319,6 +300,7 @@ impl std::fmt::Display for FinmindError {
             FinmindError::SerdeJson(ref e) => write!(f, "Serde_json Lib error: {}", e),
             FinmindError::Reqwest(ref e) => write!(f, "Reqwest Lib error: {}", e),
             FinmindError::RateLimitReached => write!(f, "Rate limit reached"),
+            FinmindError::BadRequest => write!(f, "Bad Request"),
             FinmindError::Unknown(ref e) => write!(f, "Unknown error: {}", e),
         }
     }
@@ -331,6 +313,7 @@ impl std::error::Error for FinmindError {
             FinmindError::SerdeJson(ref e) => Some(e),
             FinmindError::Reqwest(ref e) => Some(e),
             FinmindError::RateLimitReached => None,
+            FinmindError::BadRequest => None,
             FinmindError::Unknown(ref _e) => None,
         }
     }
@@ -366,6 +349,7 @@ impl From<String> for FinmindError {
 impl From<ErrorResponse> for FinmindError {
     fn from(err: ErrorResponse) -> FinmindError {
         match err.status {
+            400 => FinmindError::BadRequest,
             402 => FinmindError::RateLimitReached,
             _ => FinmindError::Unknown(err),
         }

@@ -1,6 +1,7 @@
 use crate::schema::{Args, ErrorResponse, Response, Result};
 
-const V3_DEFAULT_URL: &str = "https://api.finmindtrade.com/api/v3/data";
+// const V3_DEFAULT_URL: &str = "https://api.finmindtrade.com/api/v3/data";
+const V4_DEFAULT_URL: &str = "https://api.finmindtrade.com/api/v4/data";
 const DEFAULT_DATE_FORMAT: &str = "%Y-%m-%d";
 
 pub fn request_blocking<A>(args: A) -> Result<Response>
@@ -9,20 +10,19 @@ where
 {
     let args = args.into();
     let url = reqwest::Url::parse_with_params(
-        V3_DEFAULT_URL,
+        V4_DEFAULT_URL,
         &[
-            ("stock_id", args.stock_id),
+            ("data_id", args.data_id),
             ("dataset", args.dataset.to_string()),
             (
-                "date",
+                "start_date",
                 args.start_date.format(DEFAULT_DATE_FORMAT).to_string(),
             ),
             (
                 "end_date",
                 args.end_date.format(DEFAULT_DATE_FORMAT).to_string(),
             ),
-            ("user_id", args.user_id),
-            ("password", args.password),
+            ("token", args.token),
         ],
     )?;
 
@@ -48,20 +48,19 @@ where
 {
     let args = args.into();
     let url = reqwest::Url::parse_with_params(
-        V3_DEFAULT_URL,
+        V4_DEFAULT_URL,
         &[
-            ("stock_id", args.stock_id),
+            ("data_id", args.data_id),
             ("dataset", args.dataset.to_string()),
             (
-                "date",
+                "start_date",
                 args.start_date.format(DEFAULT_DATE_FORMAT).to_string(),
             ),
             (
                 "end_date",
                 args.end_date.format(DEFAULT_DATE_FORMAT).to_string(),
             ),
-            ("user_id", args.user_id),
-            ("password", args.password),
+            ("token", args.token),
         ],
     )?;
 
