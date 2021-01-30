@@ -233,6 +233,20 @@ impl From<(Dataset, String, NaiveDate, NaiveDate)> for Args {
     }
 }
 
+impl From<(Dataset, NaiveDate, NaiveDate, String)> for Args {
+    fn from(
+        (dataset, start_date, end_date, token): (Dataset, NaiveDate, NaiveDate, String),
+    ) -> Self {
+        Self {
+            dataset: dataset,
+            start_date: start_date,
+            end_date: end_date,
+            token: token,
+            ..Self::default()
+        }
+    }
+}
+
 impl From<(Dataset, String, NaiveDate, NaiveDate, String)> for Args {
     fn from(
         (dataset, stock_id, start_date, end_date, token): (
